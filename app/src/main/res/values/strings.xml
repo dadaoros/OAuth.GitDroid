@@ -4,25 +4,26 @@
     <string name="app_name">GitDroid</string>
     <string name="action_settings">Settings</string>
     <string name="welcome_title">Welcome to GitDroid</string>
-    <string name="login">Login:</string>
+    <string name="login">Login: </string>
     <string name="username">Username or Email</string>
     <string name="password">Password</string>
     <string name="app_description">GitDroid is the new application that lets you know all the changes generated to repositories of your github account,</string>
-    <string name="displayUser"> Username:</string>
-    <string name="displayPassword"> Password:</string>
-    <string name="welcome_message6"> and all from your smartphone</string>
+    <string name="displayUser"> Username: </string>
+    <string name="displayPassword"> Password: </string>
     <string name="remember_password">remember password</string>
     <string name="forgot_passwords">forgot password</string>
     <string name="example_email">example@hotmail.com</string>
-    <string name="email">Email:</string>
+    <string name="email">Email: </string>
     <string name="thinking_message">Please, type your email and we send you an email with the link for a new password</string>
+    <string name="title_activity_forgot_password">ForgotPassword</string>
+    <string name="submit">Submit</string>
+    <string name="welcome_message">Welcome to GitDroid</string>
+    <string name="name">Name: </string>
     <!-- Buttons -->
     <string name="sign_in_button">Sign in</string>
     <string name="forgot_password"><u><b><i>forgot password</i></b></u></string>
     <string name="title_activity_display_data">Data</string>
-    <string name="todo">TODO</string>
-    <string name="title_activity_forgot_password">ForgotPassword</string>
-    <string name="submit">Submit</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 
 </resources>
