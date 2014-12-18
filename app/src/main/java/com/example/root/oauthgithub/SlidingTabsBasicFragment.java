@@ -18,6 +18,9 @@ package com.example.root.oauthgithub;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,25 +32,22 @@ import view.SlidingTabLayout;
 import java.util.ArrayList;
 
 
-public class SlidingTabsBasicFragment extends Fragment {
+public class SlidingTabsBasicFragment extends Fragment{
 
-     /**
-     * A custom {@link android.support.v4.view.ViewPager} title strip which looks much like Tabs present in Android v4.0 and
-     * above, but is designed to give continuous feedback to the user when scrolling.
-     */
+    private ListReposFragment reposFragment;
     private SlidingTabLayout mSlidingTabLayout;
 
     private ViewPager mViewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-
+                             Bundle savedInstanceState) {
 
 
         return inflater.inflate(R.layout.fragment_sample, container, false);
 
     }
+
 
 
     @Override
@@ -56,18 +56,14 @@ public class SlidingTabsBasicFragment extends Fragment {
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         Bundle arguments = getArguments();
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        Log.d("main ",arguments.getString("access_token"));
+        Log.d("main ", arguments.getString("access_token"));
         mViewPager.setAdapter(new SimplePagerAdapter(this, arguments.getString("access_token")));
-        // END_INCLUDE (setup_viewpager)
-
-        // BEGIN_INCLUDE (setup_slidingtablayout)
-        // Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
-        // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
-        mSlidingTabLayout.setCustomTabView(R.layout.custom_tab,0);
+        mSlidingTabLayout.setCustomTabView(R.layout.custom_tab, 0);
         mSlidingTabLayout.setViewPager(mViewPager);
-         // END_INCLUDE (setup_slidingtablayout)
+        // END_INCLUDE (setup_slidingtablayout)
     }
+
     // END_INCLUDE (fragment_onviewcreated)
 
 }

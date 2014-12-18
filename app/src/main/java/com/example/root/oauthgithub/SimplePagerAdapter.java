@@ -2,6 +2,8 @@ package com.example.root.oauthgithub;
 
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -9,13 +11,8 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import Models.Profile;
 
@@ -27,6 +24,7 @@ public class SimplePagerAdapter extends PagerAdapter {
     private int[] imageResId={R.drawable.ic_action_important,R.drawable.ic_action_person,R.drawable.ic_action_storage};
     String token;
     WSManager manager;
+    ListReposFragment reposFragment;
     public SimplePagerAdapter(Fragment f,String token){
         this.f=f;
         this.token=token;
@@ -67,33 +65,60 @@ public class SimplePagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         // Inflate a new layout from our resources
         View view=null;
-        if(position==1) {
-            Profile profile;
-            view = f.getActivity().getLayoutInflater().inflate(R.layout.profile_item,container, false);
-            // Add the newly created View to the ViewPager
-            container.addView(view);
-            RequestParams params = new RequestParams();
-            params.put("access_token", token);
-            manager.setContext(f);
-            manager.loadProfile(params);
+        RequestParams params = new RequestParams();
+        switch (position) {
+            case 1:
+                Profile profile;
+                view = f.getActivity().getLayoutInflater().inflate(R.layout.profile_item, container, false);
+                // Add the newly created View to the ViewPager
+                container.addView(view);
 
-        }else{
-            view = f.getActivity().getLayoutInflater().inflate(R.layout.repos_item,
-                    container, false);
-            container.addView(view);
-            // Add the newly created View to the ViewPager
+                params.put("access_token", token);
+                manager.setContext(f);
+                manager.loadProfile(params);
+
+                break;
+            case 0:
+                view = f.getActivity().getLayoutInflater().inflate(R.layout.fragment_list_repos,
+                        container, false);
+                container.addView(view);
+
+                params.put("access_token", token);
+                manager.setContext(f);
+                loadFragment(getReposFragment());
+                manager.loadRepos(params, reposFragment);
+                break;
+
+
+            // Return the View
         }
-
-        // Return the View
         return view;
     }
 
-    /**
-     * Destroy the item from the {@link android.support.v4.view.ViewPager}. In our case this is simply removing the
-     * {@link android.view.View}.
-     */
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
+    }
+    private void loadFragment(Fragment fragment) {
+        FragmentManager fManager = f.getFragmentManager();
+        FragmentTransaction transaction = fManager.beginTransaction();
+        transaction.replace(R.id.viewpager, fragment);
+        transaction.commit();
+    }
+
+    private void changeFragment(int caso) {
+        switch (caso) {
+            case 1:
+                loadFragment(getReposFragment());
+                //envia el adaptador actualizado a la lista
+
+                break;
+            //TODO: Terminar de Implementar switch case
+        }
+    }
+
+    public ListReposFragment getReposFragment() {
+        if(reposFragment==null)reposFragment=new ListReposFragment();
+        return reposFragment;
     }
 }

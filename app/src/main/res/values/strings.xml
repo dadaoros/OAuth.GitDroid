@@ -23,7 +23,9 @@
     <string name="sign_in_button">Sign in</string>
     <string name="forgot_password"><u><b><i>forgot password</i></b></u></string>
     <string name="title_activity_display_data">Data</string>
-
+    <string name="repositories">Repositories</string>
+    <string name="continue_text">Continue</string>
+    <string name="repo">Repo</string>
 
 
 </resources>
