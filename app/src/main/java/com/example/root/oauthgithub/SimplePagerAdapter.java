@@ -66,6 +66,8 @@ public class SimplePagerAdapter extends PagerAdapter {
         // Inflate a new layout from our resources
         View view=null;
         RequestParams params = new RequestParams();
+        Log.d("InstantiateItem: ","pos: "+position+" container "+container);
+        manager.setContext(f);
         switch (position) {
             case 1:
                 Profile profile;
@@ -74,19 +76,18 @@ public class SimplePagerAdapter extends PagerAdapter {
                 container.addView(view);
 
                 params.put("access_token", token);
-                manager.setContext(f);
                 manager.loadProfile(params);
 
                 break;
-            case 0:
+            case 2:
+
                 view = f.getActivity().getLayoutInflater().inflate(R.layout.fragment_list_repos,
                         container, false);
                 container.addView(view);
 
                 params.put("access_token", token);
-                manager.setContext(f);
                 loadFragment(getReposFragment());
-                manager.loadRepos(params, reposFragment);
+                manager.loadRepos(params);
                 break;
 
 
@@ -97,7 +98,8 @@ public class SimplePagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
+        //container.removeView((View) object);
+        f.onDestroy();
     }
     private void loadFragment(Fragment fragment) {
         FragmentManager fManager = f.getFragmentManager();
@@ -106,16 +108,6 @@ public class SimplePagerAdapter extends PagerAdapter {
         transaction.commit();
     }
 
-    private void changeFragment(int caso) {
-        switch (caso) {
-            case 1:
-                loadFragment(getReposFragment());
-                //envia el adaptador actualizado a la lista
-
-                break;
-            //TODO: Terminar de Implementar switch case
-        }
-    }
 
     public ListReposFragment getReposFragment() {
         if(reposFragment==null)reposFragment=new ListReposFragment();

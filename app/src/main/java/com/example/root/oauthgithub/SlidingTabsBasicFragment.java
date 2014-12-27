@@ -34,7 +34,6 @@ import java.util.ArrayList;
 
 public class SlidingTabsBasicFragment extends Fragment{
 
-    private ListReposFragment reposFragment;
     private SlidingTabLayout mSlidingTabLayout;
 
     private ViewPager mViewPager;
@@ -59,11 +58,10 @@ public class SlidingTabsBasicFragment extends Fragment{
         Log.d("main ", arguments.getString("access_token"));
         mViewPager.setAdapter(new SimplePagerAdapter(this, arguments.getString("access_token")));
         mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
-        mSlidingTabLayout.setCustomTabView(R.layout.custom_tab, 0);
+        mSlidingTabLayout.setCustomTabView(R.layout.custom_tab, 1);
         mSlidingTabLayout.setViewPager(mViewPager);
         // END_INCLUDE (setup_slidingtablayout)
     }
 
-    // END_INCLUDE (fragment_onviewcreated)
 
 }

@@ -18,7 +18,6 @@ import Models.Repo;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ListReposFragment extends Fragment {
 
-    //TODO: remover implement Onclick
     private ArrayAdapter<Repo> listAdapter;
 
     public ListReposFragment() {
@@ -33,12 +32,10 @@ public class ListReposFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        Log.w("Estado", "Working");
     }
     @Override
     public void onPause() {
         super.onPause();
-        Log.w("Estado", "Suspendido");
     }
     public void setListAdapter(ArrayAdapter<Repo> listAdapter) {
         this.listAdapter = listAdapter;

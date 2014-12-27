@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Models.Repo;
 
@@ -14,9 +15,9 @@ import Models.Repo;
  * Created by root on 6/10/14.
  */
 public class ReposListAdapter extends ArrayAdapter {
-    ArrayList<Repo> repos;
+    List<Repo> repos;
     Activity ctxt;
-    public ReposListAdapter(ArrayList<Repo> repos, Activity ctxt) {
+    public ReposListAdapter(List<Repo> repos, Activity ctxt) {
         super(ctxt,R.layout.listview_item,repos);
         this.ctxt=ctxt;
         this.repos=repos;
@@ -37,7 +38,7 @@ public class ReposListAdapter extends ArrayAdapter {
         return position;
     }
 
-    public ArrayList<Repo> getReposList(){
+    public List<Repo> getReposList(){
         return repos;
     }
     @Override
@@ -45,14 +46,14 @@ public class ReposListAdapter extends ArrayAdapter {
         if (view == null) {
             view = ctxt.getLayoutInflater().inflate(R.layout.listview_item, null);
         }
-        TextView nombreLoteria= (TextView) view.findViewById(R.id.title);
-        TextView numeroLoteria= (TextView) view.findViewById(R.id.l_number);
-        TextView numeroSerie= (TextView) view.findViewById(R.id.l_series);
+        TextView repoName= (TextView) view.findViewById(R.id.title);
+        TextView repoDesc= (TextView) view.findViewById(R.id.repo_description);
+        TextView repoUrl= (TextView) view.findViewById(R.id.repo_url_view);
 
         Repo repo=repos.get(position);
-        nombreLoteria.setText(repo.getName());
-        numeroLoteria.setText("numero");
-        numeroSerie.setText("serie");
+        repoName.setText(repo.getName());
+        repoDesc.setText(repo.getDescripcion());
+        repoUrl.setText(repo.getUrl());
 
         return view;
     }
