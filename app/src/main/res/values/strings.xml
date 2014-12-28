@@ -26,6 +26,7 @@
     <string name="repositories">Repositories</string>
     <string name="continue_text">Continue</string>
     <string name="repo">Repo</string>
+    <string name="signup_title">Access with your Account</string>
 
 
 </resources>

@@ -66,7 +66,6 @@ public class SimplePagerAdapter extends PagerAdapter {
         // Inflate a new layout from our resources
         View view=null;
         RequestParams params = new RequestParams();
-        Log.d("InstantiateItem: ","pos: "+position+" container "+container);
         manager.setContext(f);
         switch (position) {
             case 1:

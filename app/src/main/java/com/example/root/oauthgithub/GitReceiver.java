@@ -88,8 +88,6 @@ public class GitReceiver extends BroadcastReceiver {
             }else{
                 reposAdapter.notifyDataSetChanged();
             }
-            Log.d("test_element",reposList.getItemAtPosition(0).toString());
-
             Log.w("count repos: ", " " + reposList.getAdapter().getCount());
 
 

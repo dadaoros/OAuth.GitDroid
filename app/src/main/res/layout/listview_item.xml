@@ -12,20 +12,20 @@
         android:id="@+id/image_view"
         android:layout_width="50sp"
         android:layout_height="50sp"
-        android:padding="3sp"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@drawable/ic_repo"/>
     <TextView android:id="@+id/title"
         android:textSize="25sp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/image_view"
+        android:textStyle="bold"
         android:text="@string/repo"/>
     <TextView android:id="@+id/repo_description"
         android:paddingLeft="10sp"
         android:paddingRight="3sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="23sp"
+        android:textSize="20sp"
         android:layout_below="@+id/title"
         android:layout_toRightOf="@+id/image_view"
         android:text="-"/>
@@ -35,6 +35,7 @@
         android:textSize="18sp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textStyle="italic"
         android:text="http://github.com/myrepourl"/>
 
 </RelativeLayout>
