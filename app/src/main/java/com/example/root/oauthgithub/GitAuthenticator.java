@@ -19,8 +19,6 @@ public class GitAuthenticator extends AbstractAccountAuthenticator {
     Context mContext;
     public GitAuthenticator(Context context) {
         super(context);
-
-        // I hate you! Google - set mContext as protected!
         this.mContext = context;
     }
     @Override
@@ -32,10 +30,10 @@ public class GitAuthenticator extends AbstractAccountAuthenticator {
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
         Log.d("GitDroid",  "> addAccount");
 
-        final Intent intent = new Intent();
-        intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, accountType);
-        intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
-        intent.putExtra(LoginActivity.ARG_IS_ADDING_NEW_ACCOUNT, true);
+        final Intent intent = new Intent(mContext, LoginActivity.class);
+        intent.putExtra(GitStatic.ARG_ACCOUNT_TYPE, accountType);
+        intent.putExtra(GitStatic.ARG_AUTH_TYPE, authTokenType);
+        intent.putExtra(GitStatic.ARG_IS_ADDING_NEW_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 
         final Bundle bundle = new Bundle();
@@ -51,9 +49,6 @@ public class GitAuthenticator extends AbstractAccountAuthenticator {
 
         String authToken = am.peekAuthToken(account, authTokenType);
 
-        Log.d("udinic peekAuthToken returned - " ," "+authToken);
-
-
         if (!TextUtils.isEmpty(authToken)) {
             final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
@@ -66,10 +61,10 @@ public class GitAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public String getAuthTokenLabel(String authTokenType) {
-        if (LoginActivity.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
-            return LoginActivity.AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
-        else if (LoginActivity.AUTHTOKEN_TYPE_READ_ONLY.equals(authTokenType))
-            return LoginActivity.AUTHTOKEN_TYPE_READ_ONLY_LABEL;
+        if (GitStatic.AUTHTOKEN_TYPE_FULL_ACCESS.equals(authTokenType))
+            return GitStatic.AUTHTOKEN_TYPE_FULL_ACCESS_LABEL;
+        else if (GitStatic.AUTHTOKEN_TYPE_READ_ONLY.equals(authTokenType))
+            return GitStatic.AUTHTOKEN_TYPE_READ_ONLY_LABEL;
         else
             return authTokenType + " (Label)";
     }
@@ -88,4 +83,5 @@ public class GitAuthenticator extends AbstractAccountAuthenticator {
     public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
         return null;
     }
+
 }

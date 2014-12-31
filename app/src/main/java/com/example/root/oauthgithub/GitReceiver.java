@@ -31,11 +31,12 @@ public class GitReceiver extends BroadcastReceiver {
     public static final int UPDATE_PROFILE = 1;
     public static final int UPDATE_REPOS = 2;
     public static final int CONTACTO_ACTUALIZADO = 3;
+    public static final String OPERATION_CODE="operacion";
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        int operacion = intent.getIntExtra("operacion", -1);
+        int operacion = intent.getIntExtra(OPERATION_CODE, -1);
         switch (operacion) {
             case UPDATE_PROFILE:
                 updateProfile(context,intent);
