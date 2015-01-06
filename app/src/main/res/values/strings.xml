@@ -28,8 +28,12 @@
     <string name="repositories">Repositories</string>
     <string name="continue_text">Continue</string>
     <string name="repo">Repo</string>
+    <string name="commit">Commit</string>
     <string name="signup_title">Access with your Account</string>
     <string name="login_message">Login with your account</string>
+    <string name="commits">Commits</string>
+    <string name="noti">Notifications</string>
+    <string name="commited_by">Commited by:</string>
 
 
 </resources>

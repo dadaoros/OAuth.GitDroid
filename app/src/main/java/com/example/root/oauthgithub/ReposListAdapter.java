@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import Models.Repo;
@@ -18,7 +17,7 @@ public class ReposListAdapter extends ArrayAdapter {
     List<Repo> repos;
     Activity ctxt;
     public ReposListAdapter(List<Repo> repos, Activity ctxt) {
-        super(ctxt,R.layout.listview_item,repos);
+        super(ctxt,R.layout.listview_repoitem,repos);
         this.ctxt=ctxt;
         this.repos=repos;
     }
@@ -44,7 +43,7 @@ public class ReposListAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         if (view == null) {
-            view = ctxt.getLayoutInflater().inflate(R.layout.listview_item, null);
+            view = ctxt.getLayoutInflater().inflate(R.layout.listview_repoitem, null);
         }
         TextView repoName= (TextView) view.findViewById(R.id.title);
         TextView repoDesc= (TextView) view.findViewById(R.id.repo_description);

@@ -5,8 +5,6 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,49 +20,48 @@ import Models.Repo;
 
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class ListReposFragment extends Fragment {
+public class ListCommitFragment extends Fragment {
 
-    private ArrayAdapter<Repo> listAdapter;
+    private ArrayAdapter<Commit> listAdapter;
     private ListView listView;
-    public ListReposFragment() {
+
+    public ListCommitFragment() {
         // Required empty public constructor
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_list_repos, container, false);
+         View view =inflater.inflate(R.layout.fragment_list_commit, container, false);
         initComponents(view);
         return view;
     }
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("ReposF","Resumed");
     }
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("ReposF","paused");
 
     }
     @Override
     public void onDetach(){
         super.onDetach();
-        Log.d("ReposF","Detached");
     }
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        Log.d("ReposF","Destroyed");
     }
-    public void setListAdapter(ArrayAdapter<Repo> listAdapter) {
+    public void setListAdapter(ArrayAdapter<Commit> listAdapter) {
         this.listAdapter = listAdapter;
     }
     private void initComponents(View v) {
+        Bundle arguments=getArguments();
+
         RequestParams params = new RequestParams();
         WSManager manager=new WSManager(this);
         params.put("access_token",((MainActivity)getActivity()).getToken());
-        manager.loadRepos(params);
-
+        manager.loadCommits(params,(String)arguments.get("commits_url"));
+        Log.d("CommitFragment", params.toString()+" "+arguments.get("commits_url").getClass());
     }
 
 }

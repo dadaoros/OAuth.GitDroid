@@ -2,12 +2,20 @@ package com.example.root.oauthgithub;
 /**
  * Created by root on 7/10/14.
  */
+
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,12 +23,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import Models.Commit;
 import Models.Profile;
 import Models.Repo;
 
+import static com.example.root.oauthgithub.WSManager.crearListaCommits;
 import static com.example.root.oauthgithub.WSManager.crearListaRepos;
 
 /**
@@ -30,7 +39,7 @@ public class GitReceiver extends BroadcastReceiver {
     public static final String FILTER_NAME = "git";
     public static final int UPDATE_PROFILE = 1;
     public static final int UPDATE_REPOS = 2;
-    public static final int CONTACTO_ACTUALIZADO = 3;
+    public static final int LOAD_COMMITS = 3;
     public static final String OPERATION_CODE="operacion";
 
     @Override
@@ -44,11 +53,36 @@ public class GitReceiver extends BroadcastReceiver {
             case UPDATE_REPOS:
                 updateRepos(context,intent);
                 break;
-            case CONTACTO_ACTUALIZADO:
-            //TODO: Actualizar Contacto
+            case LOAD_COMMITS:
+                loadCommits(context, intent);
                 break;
         }
     }
+
+    private void loadCommits(Context ctx, Intent intent) {
+        ListView commitList=(ListView)((Activity)ctx).findViewById(R.id.fragment_list_c);
+        try {
+            JSONArray jsonArray = new JSONArray(intent.getStringExtra("response"));
+            List<Commit> commits=crearListaCommits(jsonArray);
+
+            CommitListAdapter commitAdapter = new CommitListAdapter(commits,((Activity)ctx));
+            commitAdapter.notifyDataSetChanged();
+            commitAdapter.setNotifyOnChange(true);
+            if(commitList.getAdapter()==null){
+                commitList.setAdapter(commitAdapter);
+                commitAdapter.setNotifyOnChange(true);
+            }else{
+                commitAdapter.notifyDataSetChanged();
+            }
+
+
+        } catch (JSONException e) {
+            Log.w("excepcion: ",e.toString());
+            e.printStackTrace();
+
+        }
+    }
+
     private void updateProfile(Context ctx,Intent intent){
         TextView name, login_user, url, fwng, fwrs;
 
@@ -69,7 +103,7 @@ public class GitReceiver extends BroadcastReceiver {
             fwrs.setText(p.getFollowers());
         } catch (JSONException e) {
             //Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
-            Log.w("excepcion: ", e.toString());
+            Log.e("excepcion: ", e.toString());
             e.printStackTrace();
 
         }
@@ -86,16 +120,36 @@ public class GitReceiver extends BroadcastReceiver {
             if(reposList.getAdapter()==null){
                 reposList.setAdapter(reposAdapter);
                 reposAdapter.setNotifyOnChange(true);
+                setListener(ctx,reposList);
             }else{
                 reposAdapter.notifyDataSetChanged();
             }
-            Log.w("count repos: ", " " + reposList.getAdapter().getCount());
-
 
         } catch (JSONException e) {
             Log.w("excepcion: ",e.toString());
             e.printStackTrace();
 
         }
+    }
+    public void setListener(final Context ctx, final ListView reposList){
+
+        reposList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Repo repo = (Repo) reposList.getAdapter().getItem(position);
+                Bundle arguments = new Bundle();
+                arguments.putString("commits_url",repo.getCommits_url());
+                loadFragment(ctx,new ListCommitFragment(),arguments);
+            }
+        });
+    }
+    private void loadFragment(Context ctx,Fragment fragment,Bundle arguments) {
+        fragment.setArguments(arguments);
+        FragmentManager fManager = ((MainActivity)ctx).getSupportFragmentManager();
+        FragmentTransaction transaction = fManager.beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

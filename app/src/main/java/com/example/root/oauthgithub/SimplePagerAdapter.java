@@ -24,11 +24,12 @@ public class SimplePagerAdapter extends PagerAdapter {
     private int[] imageResId={R.drawable.ic_action_important,R.drawable.ic_action_person,R.drawable.ic_action_storage};
     String token;
     WSManager manager;
-    ListReposFragment reposFragment;
+    private boolean[] state={false,false,false};
+
     public SimplePagerAdapter(Fragment f,String token){
         this.f=f;
         this.token=token;
-        manager=new WSManager();
+        manager=new WSManager(f);
     }
         /**
      * @return the number of pages to display
@@ -66,10 +67,8 @@ public class SimplePagerAdapter extends PagerAdapter {
         // Inflate a new layout from our resources
         View view=null;
         RequestParams params = new RequestParams();
-        manager.setContext(f);
         switch (position) {
             case 1:
-                Profile profile;
                 view = f.getActivity().getLayoutInflater().inflate(R.layout.profile_item, container, false);
                 // Add the newly created View to the ViewPager
                 container.addView(view);
@@ -79,14 +78,16 @@ public class SimplePagerAdapter extends PagerAdapter {
 
                 break;
             case 2:
+                //if(!state[position]){
+                    //Como la pestaña no es destruida no neccesita añadirse el contenedor de nuevo
 
-                view = f.getActivity().getLayoutInflater().inflate(R.layout.fragment_list_repos,
-                        container, false);
-                container.addView(view);
+                    view = f.getActivity().getLayoutInflater().inflate(R.layout.container,
+                            container, false);
+                    container.addView(view);
+                    state[position]=true;
 
-                params.put("access_token", token);
-                loadFragment(getReposFragment());
-                manager.loadRepos(params);
+               // }
+                loadFragment(((MainActivity)f.getActivity()).getReposFragment());
                 break;
 
 
@@ -97,19 +98,22 @@ public class SimplePagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        //container.removeView((View) object);
+
+        container.removeView((View) object);
         f.onDestroy();
     }
     private void loadFragment(Fragment fragment) {
-        FragmentManager fManager = f.getFragmentManager();
-        FragmentTransaction transaction = fManager.beginTransaction();
-        transaction.replace(R.id.viewpager, fragment);
-        transaction.commit();
+        FragmentManager fManager = f.getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction;
+        try {
+            transaction = fManager.beginTransaction();
+            transaction.replace(R.id.container, fragment);
+            transaction.commit();
+        }catch(IllegalStateException e){
+            Log.e("error",e.getMessage().toString());
+        }
     }
 
 
-    public ListReposFragment getReposFragment() {
-        if(reposFragment==null)reposFragment=new ListReposFragment();
-        return reposFragment;
-    }
+
 }

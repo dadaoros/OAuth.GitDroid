@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.app.ProgressDialog;
 import android.content.IntentFilter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.Toast;
 
+import Models.Profile;
 
 
 public class MainActivity extends FragmentActivity {
@@ -20,7 +22,11 @@ public class MainActivity extends FragmentActivity {
     private AccountManager mAccountManager;
     private boolean mInvalidate;
     private String token;
+    private ProgressDialog pDialog;
     Bundle savedInstanceState;
+    private ListReposFragment reposFragment;
+    private SlidingTabsBasicFragment fragment;
+    private Profile profile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,9 +41,8 @@ public class MainActivity extends FragmentActivity {
         if (savedInstanceState == null) {
             Bundle arguments = new Bundle();
             arguments.putString(GitStatic.TOKEN, token);
-            Log.d("arguments ",token);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            SlidingTabsBasicFragment fragment = new SlidingTabsBasicFragment();
+            fragment = new SlidingTabsBasicFragment();
             fragment.setArguments(arguments);
             transaction.replace(R.id.content_fragment, fragment);
             transaction.commit();
@@ -65,6 +70,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onPause(){
         super.onPause();
+        pDialog.dismiss();
         unregisterReceiver(receiver);
     }
     private void addNewAccount(String accountType, String authTokenType) {
@@ -116,5 +122,29 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         }).start();
+    }
+
+    public ListReposFragment getReposFragment() {
+        if(reposFragment==null)
+            reposFragment=new ListReposFragment();
+        return reposFragment;
+    }
+    public SlidingTabsBasicFragment getSlidintabsBasicFragment(){
+        return fragment;
+    }
+    public ProgressDialog getPDialog(){
+        if(pDialog==null)pDialog=new ProgressDialog(this);
+        return pDialog;
+    }
+    public String getToken(){
+        return token;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }
