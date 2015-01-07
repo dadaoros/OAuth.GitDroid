@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
-    android:orientation="horizontal"
+
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,13 +12,14 @@
         android:id="@+id/image_view"
         android:layout_width="50sp"
         android:layout_height="50sp"
-        android:paddingTop="3sp"
+        android:paddingTop="5sp"
         android:src="@drawable/ic_repo"/>
     <TextView android:id="@+id/title"
         android:textSize="25sp"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/image_view"
+        android:layout_toLeftOf="@+id/image_next"
         android:textStyle="bold"
         android:text="@string/repo"/>
     <TextView android:id="@+id/repo_description"
@@ -30,6 +30,7 @@
         android:textSize="20sp"
         android:layout_below="@+id/title"
         android:layout_toRightOf="@+id/image_view"
+        android:layout_toLeftOf="@+id/image_next"
         android:text="-"/>
 
     <TextView android:id="@+id/repo_url_view"
@@ -38,6 +39,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textStyle="italic"
+        android:layout_toLeftOf="@+id/image_next"
         android:text="http://github.com/myrepourl"/>
+    <ImageView
+        android:id="@+id/image_next"
+        android:layout_alignParentRight="true"
+        android:layout_width="35sp"
+        android:layout_height="60sp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ic_action_next_item"/>
 
 </RelativeLayout>

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
 
@@ -21,17 +22,15 @@ import Models.Repo;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ListCommitFragment extends Fragment {
-
-    private ArrayAdapter<Commit> listAdapter;
-    private ListView listView;
-
+    View view;
     public ListCommitFragment() {
         // Required empty public constructor
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
          View view =inflater.inflate(R.layout.fragment_list_commit, container, false);
-        initComponents(view);
+        this.view=view;
+        initComponents();
         return view;
     }
     @Override
@@ -51,17 +50,15 @@ public class ListCommitFragment extends Fragment {
     public void onDestroyView(){
         super.onDestroyView();
     }
-    public void setListAdapter(ArrayAdapter<Commit> listAdapter) {
-        this.listAdapter = listAdapter;
-    }
-    private void initComponents(View v) {
+    private void initComponents() {
         Bundle arguments=getArguments();
 
         RequestParams params = new RequestParams();
         WSManager manager=new WSManager(this);
-        params.put("access_token",((MainActivity)getActivity()).getToken());
-        manager.loadCommits(params,(String)arguments.get("commits_url"));
-        Log.d("CommitFragment", params.toString()+" "+arguments.get("commits_url").getClass());
+        params.put("access_token", ((MainActivity) getActivity()).getToken());
+        manager.loadCommits(params, (String) arguments.get("commits_url"));
+        TextView title=(TextView)view.findViewById(R.id.repo_name_label);
+        title.setText((String)arguments.get("repo_name")+"/Commits");
     }
 
 }

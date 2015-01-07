@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
 
@@ -38,23 +39,19 @@ public class ListReposFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        Log.d("ReposF","Resumed");
     }
     @Override
     public void onPause() {
         super.onPause();
-        Log.d("ReposF","paused");
 
     }
     @Override
     public void onDetach(){
         super.onDetach();
-        Log.d("ReposF","Detached");
     }
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        Log.d("ReposF","Destroyed");
     }
     public void setListAdapter(ArrayAdapter<Repo> listAdapter) {
         this.listAdapter = listAdapter;
@@ -64,6 +61,7 @@ public class ListReposFragment extends Fragment {
         WSManager manager=new WSManager(this);
         params.put("access_token",((MainActivity)getActivity()).getToken());
         manager.loadRepos(params);
+
 
     }
 

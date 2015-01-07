@@ -1,6 +1,7 @@
 package com.example.root.oauthgithub;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -49,10 +50,12 @@ public class ReposListAdapter extends ArrayAdapter {
         TextView repoDesc= (TextView) view.findViewById(R.id.repo_description);
         TextView repoUrl= (TextView) view.findViewById(R.id.repo_url_view);
 
+
         Repo repo=repos.get(position);
         repoName.setText(repo.getName());
         repoDesc.setText(repo.getDescripcion());
         repoUrl.setText(repo.getUrl());
+
 
         return view;
     }

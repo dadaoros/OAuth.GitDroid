@@ -51,12 +51,12 @@ public class SlidingTabsBasicFragment extends Fragment{
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        String token=((MainActivity)getActivity()).getToken();
         // BEGIN_INCLUDE (setup_viewpager)
         // Get the ViewPager and set it's PagerAdapter so that it can display items
-        Bundle arguments = getArguments();
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        Log.d("main ", arguments.getString("access_token"));
-        mViewPager.setAdapter(new SimplePagerAdapter(this, arguments.getString("access_token")));
+        Log.d("main ", ((MainActivity)getActivity()).getToken());
+        mViewPager.setAdapter(new SimplePagerAdapter(this, token));
         mSlidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setCustomTabView(R.layout.custom_tab, 1);
         mSlidingTabLayout.setViewPager(mViewPager);

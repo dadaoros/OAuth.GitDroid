@@ -51,7 +51,6 @@ public class CommitListAdapter extends ArrayAdapter {
         TextView commitAuthor= (TextView) view.findViewById(R.id.commit_author);
         TextView commitMessage= (TextView) view.findViewById(R.id.commit_message);
         TextView commitUrl=(TextView)view.findViewById(R.id.commit_url_view);
-        Log.d("elemento",position+"");
         Commit commit=commits.get(position);
         commitAuthor.setText(commit.getAuthor());
         commitMessage.setText(commit.getMessage());

@@ -10,26 +10,32 @@ import android.content.IntentFilter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.ref.WeakReference;
 
 import Models.Profile;
 
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends ActionBarActivity {
     GitReceiver receiver;
     private AccountManager mAccountManager;
-    private boolean mInvalidate;
     private String token;
     private ProgressDialog pDialog;
     Bundle savedInstanceState;
     private ListReposFragment reposFragment;
     private SlidingTabsBasicFragment fragment;
     private Profile profile;
+    private static WeakReference<MainActivity> wrActivity = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        wrActivity = new WeakReference<MainActivity>(this);
         setContentView(R.layout.activity_main);
         this.savedInstanceState=savedInstanceState;
         mAccountManager = AccountManager.get(this);
@@ -37,13 +43,10 @@ public class MainActivity extends FragmentActivity {
         getAccount(GitStatic.AUTHTOKEN_TYPE_FULL_ACCESS,false);
 
     }
-    public void initComponents(Bundle savedInstanceState){
+    public void initComponents(){
         if (savedInstanceState == null) {
-            Bundle arguments = new Bundle();
-            arguments.putString(GitStatic.TOKEN, token);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            FragmentTransaction transaction = wrActivity.get().getSupportFragmentManager().beginTransaction();
             fragment = new SlidingTabsBasicFragment();
-            fragment.setArguments(arguments);
             transaction.replace(R.id.content_fragment, fragment);
             transaction.commit();
         }
@@ -70,7 +73,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onPause(){
         super.onPause();
-        pDialog.dismiss();
+        if(pDialog!=null)pDialog.dismiss();
         unregisterReceiver(receiver);
     }
     private void addNewAccount(String accountType, String authTokenType) {
@@ -90,8 +93,6 @@ public class MainActivity extends FragmentActivity {
         }, null);
     }
     private void getAccount(final String authTokenType, final boolean invalidate) {
-        mInvalidate = invalidate;
-
         final Account availableAccounts[] = mAccountManager.getAccountsByType(LoginActivity.ACCOUNT_TYPE);
 
         if (availableAccounts.length == 0) {
@@ -114,12 +115,13 @@ public class MainActivity extends FragmentActivity {
 
                     final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
                     token=authtoken;
-                    initComponents(savedInstanceState);
-                    //TODO: probar si la token es valida
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.d("error ",e.getMessage());
                 }
+
+                initComponents();
+                //TODO: probar si la token es valida
             }
         }).start();
     }
@@ -128,9 +130,6 @@ public class MainActivity extends FragmentActivity {
         if(reposFragment==null)
             reposFragment=new ListReposFragment();
         return reposFragment;
-    }
-    public SlidingTabsBasicFragment getSlidintabsBasicFragment(){
-        return fragment;
     }
     public ProgressDialog getPDialog(){
         if(pDialog==null)pDialog=new ProgressDialog(this);

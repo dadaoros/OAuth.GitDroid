@@ -4,6 +4,7 @@ package com.example.root.oauthgithub;
  */
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.content.BroadcastReceiver;
@@ -16,9 +17,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -83,33 +86,45 @@ public class GitReceiver extends BroadcastReceiver {
         }
     }
 
-    private void updateProfile(Context ctx,Intent intent){
+    private void updateProfile(Context ctx,Intent intent) {
         TextView name, login_user, url, fwng, fwrs;
-
+        ImageView imageView;
+        String imgUrl=null;
         try {
             JSONObject obj = new JSONObject(intent.getStringExtra("response"));
             Profile p = new Profile(obj.getString("name"), obj.getString("login"), obj.getString("avatar_url"),
                     obj.getString("url"), obj.getString("followers"), obj.getString("following"));
 
-            name = (TextView) ((Activity)ctx).findViewById(R.id.view_name);
-            login_user = (TextView) ((Activity)ctx).findViewById(R.id.view_username);
-            url = (TextView) ((Activity)ctx).findViewById(R.id.view_url);
-            fwng = (TextView) ((Activity)ctx).findViewById(R.id.view_following);
-            fwrs = (TextView) ((Activity)ctx).findViewById(R.id.view_followers);
+            name = (TextView) ((Activity) ctx).findViewById(R.id.view_name);
+            login_user = (TextView) ((Activity) ctx).findViewById(R.id.view_username);
+            url = (TextView) ((Activity) ctx).findViewById(R.id.view_url);
+            fwng = (TextView) ((Activity) ctx).findViewById(R.id.view_following);
+            fwrs = (TextView) ((Activity) ctx).findViewById(R.id.view_followers);
             name.setText(p.getName());
             login_user.setText(p.getLogin());
             url.setText(p.getUrl());
             fwng.setText(p.getFollowing());
             fwrs.setText(p.getFollowers());
+            imgUrl=p.getAvatar_url();
+
         } catch (JSONException e) {
             //Toast.makeText(getApplicationContext(), "Error Occured [Server's JSON response might be invalid]!", Toast.LENGTH_LONG).show();
             Log.e("excepcion: ", e.toString());
             e.printStackTrace();
 
         }
+        if (imgUrl!=null) {
+            imageView = (ImageView) ((Activity) ctx).findViewById(R.id.profile_image);
+            ImageLoader imageLoader = new ImageLoader();
+            imageLoader.setImageView(imageView);
+            imageLoader.execute(imgUrl);
+            //imageView.getDrawable(); -> tomar la imagen descargada para reutilziarla en dado momento
+
+        }
     }
 
     private void updateRepos(Context ctx, Intent intent){
+
         ListView reposList=(ListView)((Activity)ctx).findViewById(R.id.fragment_list);
         try {
             JSONArray jsonArray = new JSONArray(intent.getStringExtra("response"));
@@ -139,8 +154,9 @@ public class GitReceiver extends BroadcastReceiver {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Repo repo = (Repo) reposList.getAdapter().getItem(position);
                 Bundle arguments = new Bundle();
-                arguments.putString("commits_url",repo.getCommits_url());
-                loadFragment(ctx,new ListCommitFragment(),arguments);
+                arguments.putString("repo_name",repo.getName());
+                arguments.putString("commits_url", repo.getCommits_url());
+                loadFragment(ctx, new ListCommitFragment(), arguments);
             }
         });
     }

@@ -3,9 +3,11 @@ package com.example.root.oauthgithub;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -17,6 +19,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +57,9 @@ public class WSManager {
                     p = new Profile(obj.getString("name"), obj.getString("login"), obj.getString("avatar_url"),
                         obj.getString("url"), obj.getString("followers"), obj.getString("following"));
                     ((MainActivity)f.getActivity()).setProfile(p);
+
+                    TextView title=(TextView) f.getActivity().findViewById(R.id.repos_list_title);
+                    title.setText(((MainActivity) f.getActivity()).getProfile().getLogin() + "/Repositories");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -188,4 +196,5 @@ public class WSManager {
         }
         return commits;
     }
+
 }

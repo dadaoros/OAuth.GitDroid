@@ -14,18 +14,14 @@ import android.view.ViewGroup;
 
 import com.loopj.android.http.RequestParams;
 
-import Models.Profile;
-
 /**
  * Created by root on 16/12/14.
  */
 public class SimplePagerAdapter extends PagerAdapter {
     Fragment f;
-    private int[] imageResId={R.drawable.ic_action_important,R.drawable.ic_action_person,R.drawable.ic_action_storage};
+    private int[] imageResId={R.drawable.ic_action_person,R.drawable.ic_action_storage,R.drawable.ic_action_important};
     String token;
     WSManager manager;
-    private boolean[] state={false,false,false};
-
     public SimplePagerAdapter(Fragment f,String token){
         this.f=f;
         this.token=token;
@@ -36,7 +32,7 @@ public class SimplePagerAdapter extends PagerAdapter {
      */
     @Override
     public int getCount() {
-        return imageResId.length;
+        return imageResId.length-1;
     }
 
     /**
@@ -68,7 +64,7 @@ public class SimplePagerAdapter extends PagerAdapter {
         View view=null;
         RequestParams params = new RequestParams();
         switch (position) {
-            case 1:
+            case 0:
                 view = f.getActivity().getLayoutInflater().inflate(R.layout.profile_item, container, false);
                 // Add the newly created View to the ViewPager
                 container.addView(view);
@@ -77,16 +73,12 @@ public class SimplePagerAdapter extends PagerAdapter {
                 manager.loadProfile(params);
 
                 break;
-            case 2:
-                //if(!state[position]){
-                    //Como la pestaña no es destruida no neccesita añadirse el contenedor de nuevo
+            case 1:
 
                     view = f.getActivity().getLayoutInflater().inflate(R.layout.container,
                             container, false);
                     container.addView(view);
-                    state[position]=true;
 
-               // }
                 loadFragment(((MainActivity)f.getActivity()).getReposFragment());
                 break;
 
@@ -110,7 +102,7 @@ public class SimplePagerAdapter extends PagerAdapter {
             transaction.replace(R.id.container, fragment);
             transaction.commit();
         }catch(IllegalStateException e){
-            Log.e("error",e.getMessage().toString());
+            Log.e("error",e.getMessage());
         }
     }
 
