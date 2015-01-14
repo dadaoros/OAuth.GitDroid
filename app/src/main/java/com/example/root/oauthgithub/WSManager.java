@@ -1,6 +1,7 @@
 package com.example.root.oauthgithub;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,16 +34,20 @@ import Models.Repo;
 public class WSManager {
     private ProgressDialog pDialog;
     private AsyncHttpClient client;
-    private Fragment f;
+    private MainActivity activity;
 
     RequestHandle requestHandle;
     public WSManager(Fragment f){
         client = new AsyncHttpClient();
-        this.f=f;
+        this.activity=(MainActivity)f.getActivity();
+    }
+    public WSManager(MainActivity activity){
+        client = new AsyncHttpClient();
+        this.activity=activity;
     }
 
     public void loadProfile(RequestParams params){
-        if(pDialog==null)pDialog= ((MainActivity)f.getActivity()).getPDialog();
+        if(pDialog==null)pDialog= activity.getPDialog();
         pDialog.show();
         // Make RESTful webservice call using AsyncHttpClient object
         requestHandle = client.get("https://api.github.com/user", params, new AsyncHttpResponseHandler() {
@@ -56,24 +61,24 @@ public class WSManager {
                     obj = new JSONObject(response);
                     p = new Profile(obj.getString("name"), obj.getString("login"), obj.getString("avatar_url"),
                         obj.getString("url"), obj.getString("followers"), obj.getString("following"));
-                    ((MainActivity)f.getActivity()).setProfile(p);
+                    activity.setProfile(p);
 
-                    TextView title=(TextView) f.getActivity().findViewById(R.id.repos_list_title);
-                    title.setText(((MainActivity) f.getActivity()).getProfile().getLogin() + "/Repositories");
+                    TextView title=(TextView) activity.findViewById(R.id.repos_list_title);
+                    title.setText(activity.getProfile().getLogin() + "/Repositories");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 Intent intent =new Intent(GitReceiver.FILTER_NAME);
                 intent.putExtra(GitReceiver.OPERATION_CODE,GitReceiver.UPDATE_PROFILE);
                 intent.putExtra("response",response);
-                f.getActivity().sendBroadcast(intent);
+                activity.sendBroadcast(intent);
                 pDialog.hide();
             }
 
             // When the response returned by REST has Http response code other than '200'
             @Override
             public void onFailure(int statusCode, Throwable error, String content) {
-
+                activity.getAccount(GitStatic.AUTHTOKEN_TYPE_FULL_ACCESS,true);
                 Log.w("Error - statuscode: ", " " + statusCode);
 
                 pDialog.hide();
@@ -83,7 +88,7 @@ public class WSManager {
     }
     public void loadRepos(RequestParams params){
         // Show Progress Dialog
-        if(pDialog==null)pDialog= ((MainActivity)f.getActivity()).getPDialog();
+        if(pDialog==null)pDialog= activity.getPDialog();
         pDialog.show();
         client.get("https://api.github.com/user/repos",params ,new AsyncHttpResponseHandler() {
             @Override
@@ -92,7 +97,7 @@ public class WSManager {
                 Intent intent =new Intent(GitReceiver.FILTER_NAME);
                 intent.putExtra(GitReceiver.OPERATION_CODE,GitReceiver.UPDATE_REPOS);
                 intent.putExtra("response",response);
-                f.getActivity().sendBroadcast(intent);
+                activity.sendBroadcast(intent);
                 pDialog.hide();
             }
 
@@ -108,7 +113,7 @@ public class WSManager {
     }
     public void loadCommits(RequestParams params, String commits_url){
         // Show Progress Dialog
-        if(pDialog==null)pDialog= ((MainActivity)f.getActivity()).getPDialog();
+        if(pDialog==null)pDialog= activity.getPDialog();
         pDialog.show();
         client.get(commits_url,params ,new AsyncHttpResponseHandler() {
             @Override
@@ -117,7 +122,7 @@ public class WSManager {
                 Intent intent =new Intent(GitReceiver.FILTER_NAME);
                 intent.putExtra(GitReceiver.OPERATION_CODE,GitReceiver.LOAD_COMMITS);
                 intent.putExtra("response",response);
-                f.getActivity().sendBroadcast(intent);
+                activity.sendBroadcast(intent);
 
                 pDialog.hide();
             }

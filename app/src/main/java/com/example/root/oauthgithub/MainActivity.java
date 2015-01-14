@@ -6,7 +6,10 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -15,6 +18,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.loopj.android.http.RequestParams;
 
 import java.lang.ref.WeakReference;
 
@@ -37,6 +42,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         wrActivity = new WeakReference<MainActivity>(this);
         setContentView(R.layout.activity_main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         this.savedInstanceState=savedInstanceState;
         mAccountManager = AccountManager.get(this);
 
@@ -92,7 +98,7 @@ public class MainActivity extends ActionBarActivity {
             }
         }, null);
     }
-    private void getAccount(final String authTokenType, final boolean invalidate) {
+    public void getAccount(final String authTokenType, final boolean invalidate) {
         final Account availableAccounts[] = mAccountManager.getAccountsByType(LoginActivity.ACCOUNT_TYPE);
 
         if (availableAccounts.length == 0) {
@@ -101,9 +107,34 @@ public class MainActivity extends ActionBarActivity {
         } else {
             String name;
             name= availableAccounts[0].name;
-            getExistingAccountAuthToken(availableAccounts[0], authTokenType);
+            if(invalidate) {
+                invalidateAuthToken(availableAccounts[0], authTokenType);
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }else
+                getExistingAccountAuthToken(availableAccounts[0], authTokenType);
         }
     }
+    private void invalidateAuthToken(final Account account, String authTokenType) {
+        final AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account, authTokenType, null, this, null,null);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Bundle bnd = future.getResult();
+                    final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+                    mAccountManager.removeAccount(account,null,null);
+                    Log.d(account.name , " invalidated");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("error",e.getMessage());
+                }
+            }
+        }).start();
+    }
+
     private void getExistingAccountAuthToken(Account account, String authTokenType) {
         final AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account, authTokenType, null, this, null, null);
 
@@ -117,15 +148,18 @@ public class MainActivity extends ActionBarActivity {
                     token=authtoken;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.d("error ",e.getMessage());
+                    Log.e("error ",e.getMessage());
                 }
-
-                initComponents();
-                //TODO: probar si la token es valida
+                WSManager wsManager=new WSManager(getActivity());
+                RequestParams params = new RequestParams();
+                params.put("access_token", token);
+                if(token!=null)initComponents();
             }
         }).start();
     }
-
+    private MainActivity getActivity(){
+        return this;
+    }
     public ListReposFragment getReposFragment() {
         if(reposFragment==null)
             reposFragment=new ListReposFragment();
@@ -142,7 +176,7 @@ public class MainActivity extends ActionBarActivity {
     public Profile getProfile() {
         return profile;
     }
-
+    public void setTokenNull(){token=null;}
     public void setProfile(Profile profile) {
         this.profile = profile;
     }

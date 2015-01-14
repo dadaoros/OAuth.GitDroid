@@ -20,13 +20,11 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPreExecute() {
-        // TODO Auto-generated method stub
         super.onPreExecute();
     }
 
     @Override
     protected Bitmap doInBackground(String... params) {
-        // TODO Auto-generated method stub
         Log.i("doInBackground", "Entra en doInBackground");
         String url = params[0];
         Bitmap imagen = descargarImagen(url);
@@ -35,7 +33,6 @@ public class ImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap result) {
-        // TODO Auto-generated method stub
         super.onPostExecute(result);
         imgImagen.setImageBitmap(result);
     }
