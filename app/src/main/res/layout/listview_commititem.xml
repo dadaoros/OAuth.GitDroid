@@ -11,7 +11,7 @@
         android:id="@+id/commit_image_view"
         android:layout_width="60sp"
         android:layout_height="60sp"
-        android:src="@drawable/ic_commit"/>
+        android:src="@drawable/ic_launcher"/>
     <TextView android:id="@+id/commit_date"
         android:paddingLeft="3sp"
         android:textStyle="bold"
